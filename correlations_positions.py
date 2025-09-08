@@ -3,9 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
-# -----------------------------
-# 1) Load coincidences (your TSV/whitespace file)
-# -----------------------------
+
+# 1) Load coincidences
+
 coinc_file = "coincidences_filtered.txt"   # change if needed
 coinc_df = pd.read_csv(coinc_file, sep=r"\s+", engine="python")
 if coinc_df.empty:
@@ -30,9 +30,9 @@ smin, smax = coinc_df["strip"].min(), coinc_df["strip"].max()
 if smin == 1 and smax == 16:
     coinc_df["strip"] = coinc_df["strip"] - 1
 
-# -----------------------------
+
 # 2) Detector geometry & styles
-# -----------------------------
+
 num_strips   = 16
 strip_length = 35.0   # mm (y)
 strip_width  = 5.0    # mm (x)
@@ -52,9 +52,9 @@ def strip_center_x(s): return s * strip_width + strip_width / 2.0
 coinc_df["mother_position_mm"]   = coinc_df["mother_position_mm"].clip(0, strip_length)
 coinc_df["daughter_position_mm"] = coinc_df["daughter_position_mm"].clip(0, strip_length)
 
-# -----------------------------
+
 # 3) Draw
-# -----------------------------
+
 fig, ax = plt.subplots(figsize=(10, 6))
 
 # Strips
@@ -83,9 +83,9 @@ for _, row in coinc_df.iterrows():
     ax.scatter(x, yd, marker='o', s=daughter_size, color=daughter_color,
                edgecolor='black', linewidth=0.4, zorder=3)
 
-# -----------------------------
+
 # 4) Axes & legend
-# -----------------------------
+
 ax.set_xlim(0, strip_width * num_strips)
 ax.set_ylim(0, strip_length)
 
