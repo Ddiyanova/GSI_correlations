@@ -5,4 +5,4 @@ Script explanations:
 4) Position_tolerance_gated and calibrated.py: Apllying a correlation gates on energy, time and position it plots the distribution of the position difference ∆position between correlated mother and daughter events against the event count. It is then fittet with a gaussian funtion and extracts the sigma, which later is used for position tolerance.
 6) Correlation_spectrum+chains.py:After getting the pos. tolerance we apply the gates and get a correlation plot and the correlation chains printed in the terminal.
 7) Lifetime.py: Builds a time-difference (∆t) distribution for correlated α-decays used to extract the lifetime by fitting it with exp. function. Prints the lifetime value.
-8) Correlation_visual: Shows a scheme of the 16-strip detector and there the mother and daughter decays happened.  
+8) Correlations_positions: Shows a scheme of the 16-strip detector and there the mother and daughter decays happened.  
