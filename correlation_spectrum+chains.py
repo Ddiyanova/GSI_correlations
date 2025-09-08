@@ -2,9 +2,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# =========================
+
 # 0) Config
-# =========================
+
 file_path = "20240213_Er170_Ti50_Th215_f33.txt"
 calibration_file = "fitted_peaks_per_strip.csv"  # columns: Strip,a_lin,b_lin
 
@@ -15,8 +15,8 @@ mother_max = 7880
 # Spatial gate (mm)
 position_tolerance = 0.5
 
-# ---- Time units & gate (SECONDS) ----
-# Raw time is in microseconds → convert to seconds with 1e-6
+# Time units & gate 
+
 TIME_SCALE_TO_S = 1e-6
 T_MIN_S = 0.0          # lower bound in seconds
 T_MAX_S = 20.0         # upper bound in seconds
@@ -25,9 +25,9 @@ T_MAX_S = 20.0         # upper bound in seconds
 BIN_WIDTH_KEV = 25
 XMIN_KEV, XMAX_KEV = 2000, 9000   # desired x-range for plotting
 
-# =========================
+
 # 1) Load data
-# =========================
+
 column_names = ["event", "time", "strip", "position", "energy", "channel", "beam"]
 df = pd.read_csv(file_path, delim_whitespace=True, names=column_names)
 
@@ -39,9 +39,9 @@ print(f"✅ Data loaded: {len(df)} beam-off events")
 df["time_s"] = df["time"] * TIME_SCALE_TO_S       # seconds
 df["time_us"] = df["time"]                         # microseconds (as in file)
 
-# =========================
+
 # 2) Load calibration & apply
-# =========================
+
 calib_df = pd.read_csv(calibration_file, usecols=["Strip", "a_lin", "b_lin"])
 df = df.merge(calib_df, left_on="strip", right_on="Strip", how="left")
 
@@ -53,9 +53,9 @@ df = df.dropna(subset=["a_lin", "b_lin"]).copy()
 # Apply linear calibration: E (keV) = a_lin * channel + b_lin
 df["E_keV"] = df["a_lin"] * df["channel"] + df["b_lin"]
 
-# =========================
+
 # 3) Build decay chains with position + time (seconds) gate
-# =========================
+
 events_mother = df[df["E_keV"].between(mother_min, mother_max)]
 
 decay_chains = []
@@ -135,9 +135,9 @@ for _, evt in events_mother.iterrows():
         "events": chain
     })
 
-# =========================
+
 # 4) Filter daughters & keep only single-daughter chains
-# =========================
+
 if coincidences:
     coinc_df = pd.DataFrame(coincidences)
 
@@ -163,9 +163,9 @@ else:
     ])
     print("\n⚠️ No coincidences to filter.")
 
-# =========================
+
 # 4c) Build & print filtered chains (mother + exactly one daughter)
-# =========================
+
 decay_chains_filtered = []
 
 if not coinc_df_single.empty:
@@ -226,9 +226,9 @@ if not coinc_df_single.empty:
     coinc_df_single.to_csv("coincidences_filtered.txt", sep="\t", index=False)
     print("💾 Saved filtered coincidences to 'coincidences_filtered.txt'.")
 
-# =========================
+
 # 5) Daughters-only spectrum (filtered)
-# =========================
+
 if not coinc_df_single.empty:
     # unique daughters by event id
     daughters_df = coinc_df_single[["daughter_event", "daughter_energy_keV"]].drop_duplicates()
