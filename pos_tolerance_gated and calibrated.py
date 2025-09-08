@@ -12,7 +12,7 @@ df = pd.read_csv(file_path, delim_whitespace=True, names=column_names)
 
 # Keep only BEAM == 0
 df = df[df["beam"] == 0].copy()
-print(f"✅ Data loaded: {len(df)} rows with BEAM==0")
+print(f" Data loaded: {len(df)} rows with BEAM==0")
 
 
 # 2) Load calibration and apply
@@ -23,7 +23,7 @@ calib_df = pd.read_csv(calibration_file, usecols=["Strip","a_lin","b_lin"])
 df = df.merge(calib_df, left_on="strip", right_on="Strip", how="left")
 missing = int(df["a_lin"].isna().sum())
 if missing:
-    print(f"⚠️ {missing} rows missing calibration coefficients; dropping them.")
+    print(f"{missing} rows missing calibration coefficients; dropping them.")
 df = df.dropna(subset=["a_lin","b_lin"]).copy()
 
 df["energy_calibrated"] = df["a_lin"] * df["channel"] + df["b_lin"]
@@ -54,7 +54,7 @@ mothers = df[
     df["energy_calibrated"].between(mother_energy_keV - mother_window_keV,
                                     mother_energy_keV + mother_window_keV)
 ].copy()
-print(f"✅ Mothers in gate: {len(mothers)}")
+print(f" Mothers in gate: {len(mothers)}")
 
 
 # 5) Find exactly one daughter per mother
@@ -119,7 +119,7 @@ for _, mom in mothers.iterrows():
 
 # 6) Print results
 
-print(f"\n✅ Accepted pairs (exactly one daughter): {len(chains)}")
+print(f"\n Accepted pairs (exactly one daughter): {len(chains)}")
 print(f"   Rejected (0 daughters):  {rejected_zero}")
 print(f"   Rejected (>1 daughters): {rejected_multi}")
 
@@ -163,7 +163,7 @@ if delta_positions.size > 0:
         xfit = np.linspace(centers.min(), centers.max(), 800)
         yfit = gaussian_const(xfit, *popt)
     except Exception as e:
-        print(f"\n⚠️ Fit did not converge: {e}")
+        print(f"\n Fit did not converge: {e}")
         xfit, yfit = None, None
 
     #Plot:
@@ -182,4 +182,4 @@ if delta_positions.size > 0:
     plt.tight_layout()
     plt.show()
 else:
-    print("\n⚠️ No Δposition samples to fit/plot.")
+    print("\n No Δposition samples to fit/plot.")
