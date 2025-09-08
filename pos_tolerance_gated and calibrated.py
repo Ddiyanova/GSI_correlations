@@ -3,9 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
-# -----------------------------
+
 # 1) Load data
-# -----------------------------
+
 file_path = "20240213_Er170_Ti50_Th215_f33.txt"
 column_names = ["event", "time", "strip", "position", "energy", "channel", "beam"]
 df = pd.read_csv(file_path, delim_whitespace=True, names=column_names)
@@ -14,9 +14,9 @@ df = pd.read_csv(file_path, delim_whitespace=True, names=column_names)
 df = df[df["beam"] == 0].copy()
 print(f"✅ Data loaded: {len(df)} rows with BEAM==0")
 
-# -----------------------------
+
 # 2) Load calibration and apply
-# -----------------------------
+
 calibration_file = "fitted_peaks_per_strip.csv"
 calib_df = pd.read_csv(calibration_file, usecols=["Strip","a_lin","b_lin"])
 
@@ -28,9 +28,9 @@ df = df.dropna(subset=["a_lin","b_lin"]).copy()
 
 df["energy_calibrated"] = df["a_lin"] * df["channel"] + df["b_lin"]
 
-# -----------------------------
+
 # 3) Parameters
-# -----------------------------
+
 mother_energy_keV   = 7700.0
 mother_window_keV   = 100.0
 daughter_energy_keV = 6755.0
@@ -47,18 +47,18 @@ print(f"Daughter gate: {daughter_energy_keV:.0f} ± {daughter_window_keV:.0f} ke
 print(f"Position gate: |Δx| ≤ {pos_tol_mm:.1f} mm")
 print(f"Time gate:     {T_MIN_S}–{T_MAX_S} s\n")
 
-# -----------------------------
+
 # 4) Select mothers
-# -----------------------------
+
 mothers = df[
     df["energy_calibrated"].between(mother_energy_keV - mother_window_keV,
                                     mother_energy_keV + mother_window_keV)
 ].copy()
 print(f"✅ Mothers in gate: {len(mothers)}")
 
-# -----------------------------
+
 # 5) Find exactly one daughter per mother
-# -----------------------------
+
 delta_positions = []
 chains = []
 rejected_zero  = 0
@@ -116,9 +116,9 @@ for _, mom in mothers.iterrows():
     else:
         rejected_multi += 1
 
-# -----------------------------
+
 # 6) Print results
-# -----------------------------
+
 print(f"\n✅ Accepted pairs (exactly one daughter): {len(chains)}")
 print(f"   Rejected (0 daughters):  {rejected_zero}")
 print(f"   Rejected (>1 daughters): {rejected_multi}")
@@ -128,9 +128,9 @@ if chains:
     print("\n🔎 Mother–Daughter pairs:")
     print(df_pairs.to_string(index=False))
 
-# -----------------------------
+
 # 7) Fit Gaussian to Δposition + clean legend
-# -----------------------------
+
 def gaussian_const(x, A, mu, sigma, C):
     return A * np.exp(-0.5 * ((x - mu) / sigma) ** 2) + C
 
@@ -166,7 +166,7 @@ if delta_positions.size > 0:
         print(f"\n⚠️ Fit did not converge: {e}")
         xfit, yfit = None, None
 
-    # --- Plot ---
+    #Plot:
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.hist(delta_positions, bins=n_bins, edgecolor='black', color="#ffb6c1", label="Data")
     if xfit is not None:
