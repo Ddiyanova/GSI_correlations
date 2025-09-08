@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import curve_fit
 
-# ========= User inputs =========
+#inputs:
 file_path = "20250723_calibration.txt"      # your calibration run
 cols = ["event","time","strip","position","energy","channel","beam"]
 
@@ -17,7 +17,7 @@ amp_fallback = 200.0
 # Histogram binning (channels)
 channel_bins = np.linspace(3000, 4500, 200)
 
-# ========= Model =========
+# Model:
 def gaussian(x, A, mu, s):
     return A * np.exp(-0.5*((x - mu)/s)**2)
 
@@ -32,11 +32,11 @@ ub1 = [1e6, 3500, 1e6,  3700, 1e6,  3900,  35]
 lb2 = [0,   3200,  0,   3450,  0,   3700,  10]
 ub2 = [1e6, 3600, 1e6,  3900, 1e6,  4100,  60]
 
-# ========= Load =========
+# Load:
 df = pd.read_csv(file_path, delim_whitespace=True, names=cols)
 df = df[df["beam"] == 0].copy()
 
-# ========= Helper: local seed near expected mean =========
+# Helper: local seed near expected mean 
 def local_peak_guess(xc, yc, center, halfwin=80, amp_fb=200):
     m = (xc >= center - halfwin) & (xc <= center + halfwin)
     if not np.any(m):
@@ -46,7 +46,7 @@ def local_peak_guess(xc, yc, center, halfwin=80, amp_fb=200):
     i = int(np.argmax(suby))
     return float(subx[i]), max(float(suby[i]), amp_fb)
 
-# ========= Fit per strip =========
+# Fit per strip
 results = []
 
 fig, axes = plt.subplots(4, 4, figsize=(16, 12), sharex=True, sharey=True)
@@ -125,7 +125,7 @@ plt.tight_layout(rect=[0.05, 0.05, 1, 0.95])
 plt.suptitle("Triple-Gaussian per Strip (shared σ) — calibration", fontsize=16, y=1.02)
 plt.show()
 
-# ========= Save CSV =========
+# Save CSV: 
 df_out = pd.DataFrame(results, columns=[
     "Strip",
     "Peak1_channel","Peak2_channel","Peak3_channel",
